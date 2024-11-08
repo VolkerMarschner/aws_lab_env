@@ -348,12 +348,12 @@ output "windows_private_ips" {
 # Write outputs to a file
 resource "local_file" "ec2-instance-data" {
   content = <<-EOT
-    Linux-JH Instance IDs: ${jsonencode(aws_instance.jh-linux[*].id)}
+    Linux-JH Instance ID: ${jsonencode(aws_instance.jh-linux[*].id)}
     Linux-WL Instance IDs: ${jsonencode(aws_instance.linux[*].id)}
     Windows Instance IDs: ${jsonencode(aws_instance.windows[*].id)}
 
     Jumphost Public DNS: ${aws_instance.jh-linux[0].public_dns}
-    Jumphost Public IPs: ${jsonencode(aws_instance.jh-linux[*].public_ip)}
+    Jumphost Public IP: ${jsonencode(aws_instance.jh-linux[*].public_ip)}
 
     Linux-WL Private IPs: ${jsonencode(aws_instance.linux[*].private_ip)}
     Windows Public IPs: ${jsonencode(aws_instance.windows[*].public_ip)}
