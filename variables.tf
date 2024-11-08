@@ -47,7 +47,7 @@ variable "windows_security_group_id" {
   default     = "string"
 }
 
-# EC2 Instance related Variables
+# EC2 Workload Instance related Variables
 #############################
 
 variable "linux_instance_count" {
