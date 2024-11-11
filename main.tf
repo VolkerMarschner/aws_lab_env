@@ -361,3 +361,31 @@ resource "local_file" "ec2-instance-data" {
   filename = "${path.module}/ec2-instance-data.txt"
 }
 
+resource "local_file" "ansible_inventory" {
+  content = <<-EOT
+[jumphost]
+${aws_instance.jh-linux[0].public_dns} ansible_host=${aws_instance.jh-linux[0].public_ip}
+
+[linux_workload]
+%{ for index, instance in aws_instance.linux ~}
+linux-wl-${index} ansible_host=${instance.private_ip}
+%{ endfor ~}
+
+[windows]
+%{ for index, instance in aws_instance.windows ~}
+windows-${index} ansible_host=${instance.public_ip}
+%{ endfor ~}
+
+[windows:vars]
+ansible_connection=winrm
+ansible_winrm_server_cert_validation=ignore
+ansible_winrm_transport=basic
+
+[linux_workload:vars]
+ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -q ubuntu@${aws_instance.jh-linux[0].public_dns}"'
+
+[all:vars]
+ansible_user=ubuntu
+  EOT
+  filename = "${path.module}/inventory"
+}
