@@ -386,6 +386,7 @@ ansible_winrm_transport=basic
 
 [linux_workload:vars]
 ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -q -i ${path.module}/${var.prefix}-JH-private-key.pem ubuntu@${aws_instance.jh-linux[0].public_dns}"'
+ansible_host_key_checking=False
 
 [all:vars]
 ansible_user=ubuntu
