@@ -361,14 +361,17 @@ resource "local_file" "ec2-instance-data" {
   filename = "${path.module}/ec2-instance-data.txt"
 }
 
+# create Ansible Inventory file
+#################################
+
 resource "local_file" "ansible_inventory" {
   content = <<-EOT
 [jumphost]
-${aws_instance.jh-linux[0].public_dns} ansible_host=${aws_instance.jh-linux[0].public_ip}
+${aws_instance.jh-linux[0].public_dns} ansible_host=${aws_instance.jh-linux[0].public_ip} ansible_ssh_private_key_file="${path.module}/${var.prefix}-JH-private-key.pem"
 
 [linux_workload]
 %{ for index, instance in aws_instance.linux ~}
-linux-wl-${index} ansible_host=${instance.private_ip}
+linux-wl-${index} ansible_host=${instance.private_ip} ansible_ssh_private_key_file="${path.module}/${var.prefix}-WL-private-key.pem"
 %{ endfor ~}
 
 [windows]
@@ -382,10 +385,16 @@ ansible_winrm_server_cert_validation=ignore
 ansible_winrm_transport=basic
 
 [linux_workload:vars]
-ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -q ubuntu@${aws_instance.jh-linux[0].public_dns}"'
+ansible_ssh_common_args='-o ProxyCommand="ssh -W %h:%p -q -i ${path.module}/${var.prefix}-JH-private-key.pem ubuntu@${aws_instance.jh-linux[0].public_dns}"'
 
 [all:vars]
 ansible_user=ubuntu
   EOT
   filename = "${path.module}/inventory"
+
+  # Make sure the inventory file is created after the key files
+  depends_on = [
+    local_file.jh_private_key,
+    local_file.wl_private_key
+  ]
 }
