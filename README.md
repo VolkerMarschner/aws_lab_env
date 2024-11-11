@@ -55,7 +55,7 @@ ansible -i ./inventory linux_workload -m ping
 ansible -i ./inventory linux-wl-0 -m ping
 ansible -i ./inventory linux-wl-1 -m ping
 ... and so on
-``
+```
 Once that works, finish with
 ```
 ansible-playbook -i inventory workload-setup.yml
