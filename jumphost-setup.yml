@@ -9,7 +9,7 @@
     - name: Copy WL private key files to user directory
       copy:
         src: "{{ item }}"
-        dest: "{{ user_home }}/"
+        dest: "/home/ubuntu/"
         mode: '0400'
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
@@ -19,7 +19,7 @@
     - name: Copy EC2 instance data file
       copy:
         src: ec2-instance-data.txt
-        dest: "{{ user_home }}/ec2-instance-data.txt"
+        dest: "/home/ubuntu/ec2-instance-data.txt"
         mode: '0644'
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
