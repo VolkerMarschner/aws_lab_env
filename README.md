@@ -46,7 +46,7 @@ If that works, continue with
 ```
 ansible-playbook -i inventory jumphost-setup.yml
 ```
-Once that is successfully finished, reboot the Jumphost (ssh into it or do it from the AWS Console).
+Once that is successfully finished, the Jumphost should reboot automatically -if not, do it manually (ssh into it or do it from the AWS Console).
 
 Next Step is then
 ```
