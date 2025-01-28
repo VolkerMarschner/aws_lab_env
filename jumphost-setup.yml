@@ -14,7 +14,7 @@
         owner: "{{ ansible_user }}"
         group: "{{ ansible_user }}"
       with_fileglob:
-        - "WL-private-key.pem"
+        - "*WL-private-key.pem"
 
     - name: Copy EC2 instance data file
       copy:
