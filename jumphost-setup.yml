@@ -98,8 +98,8 @@
         name: sshd
         state: restarted
 
-   - name: Unconditionally reboot the machine with all defaults
-     ansible.builtin.reboot:
+#   - name: Unconditionally reboot the machine with all defaults
+#     ansible.builtin.reboot:
 
      
 
