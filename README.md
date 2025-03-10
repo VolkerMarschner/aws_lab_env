@@ -60,7 +60,67 @@ Once that works, finish with
 ```
 ansible-playbook -i inventory workload-setup.yml
 ```
-and all should be set.
+and all should be set. Now you should have someting like this:
+
+graph TB
+    subgraph AWS_Cloud["AWS Cloud"]
+        subgraph VPC["VPC (var.vpc_cidr)"]
+            subgraph PublicSubnet["Public Subnet (Region a)"]
+                JumpHost["Ubuntu Linux Jumphost"]
+            end
+            
+            subgraph PrivateSubnet["Private Subnet (Region b)"]
+                LinuxWL["Ubuntu Linux Workloads
+                (var.linux_instance_count)"]
+                WindowsWL["Windows Server 2022 Workloads
+                (var.windows_instance_count)"]
+            end
+            
+            IGW["Internet Gateway"]
+            NGW["NAT Gateway"]
+            EIP["Elastic IP"]
+            
+            JumpHostSG["Jumphost Security Group
+            Port 22 from 0.0.0.0/0"]
+            WorkloadSG["Workload Security Group
+            All Traffic"]
+        end
+    end
+    
+    Internet((Internet))
+    User((User))
+    
+    %% Connections
+    Internet <--> IGW
+    IGW <--> PublicSubnet
+    PublicSubnet <--> NGW
+    NGW <--> PrivateSubnet
+    EIP --> NGW
+    
+    User -- "SSH" --> JumpHost
+    JumpHost -- "SSH to Linux" --> LinuxWL
+    JumpHost -- "WinRM to Windows" --> WindowsWL
+    
+    JumpHostSG --- JumpHost
+    WorkloadSG --- LinuxWL
+    WorkloadSG --- WindowsWL
+    
+    %% Styling
+    classDef vpc fill:#ECF3FF,stroke:#3178C6,stroke-width:2px
+    classDef subnet fill:#BBDEFB,stroke:#1976D2,stroke-width:2px
+    classDef instance fill:#C8E6C9,stroke:#388E3C,stroke-width:2px
+    classDef gateway fill:#FFECB3,stroke:#FFA000,stroke-width:2px
+    classDef sg fill:#E1BEE7,stroke:#8E24AA,stroke-width:2px
+    classDef external fill:#FAFAFA,stroke:#616161,stroke-width:2px,stroke-dasharray: 5 5
+    
+    class VPC vpc
+    class PublicSubnet,PrivateSubnet subnet
+    class JumpHost,LinuxWL,WindowsWL instance
+    class IGW,NGW,EIP gateway
+    class JumpHostSG,WorkloadSG sg
+    class Internet,User external
+
+    
 
 
 ## Once you do no longer need the environment, simply do a
