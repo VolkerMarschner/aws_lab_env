@@ -62,6 +62,8 @@ ansible-playbook -i inventory workload-setup.yml
 ```
 and all should be set. Now you should have someting like this:
 
+```mermaid
+
 graph TB
     subgraph AWS_Cloud["AWS Cloud"]
         subgraph VPC["VPC (var.vpc_cidr)"]
@@ -119,7 +121,7 @@ graph TB
     class IGW,NGW,EIP gateway
     class JumpHostSG,WorkloadSG sg
     class Internet,User external
-
+```
     
 
 
